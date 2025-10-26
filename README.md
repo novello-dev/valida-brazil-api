@@ -1,112 +1,138 @@
 # Valida Brasil
-[![Ask DeepWiki](https://devin.ai/assets/askdeepwiki.png)](https://deepwiki.com/novello-dev/valida-brasil)
+[![Status](https://img.shields.io/badge/status-active-brightgreen)](#)
+[![Python](https://img.shields.io/badge/Python-3.11+-blue.svg)](https://www.python.org/)
+[![Flask](https://img.shields.io/badge/Flask-2.3+-orange.svg)](https://flask.palletsprojects.com/)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
 
-A simple and lightweight API service for validating common Brazilian document formats.
+A simple and lightweight API built with **Flask** that validates and retrieves Brazilian address data using the **ViaCEP API**.  
+It provides clean, UTF-8 encoded JSON responses, ideal for small projects, tests, or API integration learning.
 
-## Features
+---
 
--   CPF (Cadastro de Pessoas Físicas) validation
--   CNPJ (Cadastro Nacional da Pessoa Jurídica) validation
+## 🚀 Features
 
-## Setup and Installation
+- `GET /health` → Health check endpoint  
+- `GET /address?cep=XXXXX-XXX` → Fetches address info from ViaCEP  
+- Returns formatted JSON with correct accentuation  
+- Lightweight and easy to deploy  
 
-1.  **Clone the repository:**
-    ```bash
+---
+
+## ⚙️ Installation
+
+To set up and run the project locally:
+
     git clone https://github.com/novello-dev/valida-brasil.git
     cd valida-brasil
-    ```
+    python -m venv .venv
 
-2.  **Create and activate a virtual environment (recommended):**
-    ```bash
-    python -m venv venv
-    source venv/bin/activate  # On Windows use `venv\Scripts\activate`
-    ```
+    # Windows (PowerShell)
+    .\.venv\Scripts\Activate.ps1
 
-3.  **Install the dependencies:**
-    The project dependencies are managed in the `requirements` directory. To install them, run:
-    ```bash
-    pip install -r requirements
-    ```
+    # macOS/Linux
+    source .venv/bin/activate
 
-## Running the API Locally
+    pip install -r requirements.txt
 
-Once the dependencies are installed, you can start the API server using an ASGI server like Uvicorn.
+---
 
-```bash
-uvicorn app.main:app --reload
-```
+## ▶️ Running the API
 
-The API will be available at `http://127.0.0.1:8000`.
+To start the Flask development server:
 
-## API Endpoints
+    # Windows
+    python app\main.py
 
-The API provides endpoints for various validation types. Requests and responses are in JSON format.
+    # macOS/Linux
+    python app/main.py
 
-### CPF Validation
+Once running, the API will be available at:
 
--   **Endpoint:** `POST /validate/cpf`
--   **Description:** Validates a Brazilian CPF number. The CPF can be sent with or without punctuation.
--   **Request Body:**
-    ```json
+    http://127.0.0.1:5000
+
+---
+
+## 📡 API Endpoints
+
+### 🩺 `/health`
+
+Checks if the API is running.
+
+**Method:** GET  
+**Response:**
+
     {
-      "cpf": "123.456.789-00"
+      "status": "ok"
     }
-    ```
--   **Success Response (200 OK):**
-    ```json
+
+---
+
+### 📍 `/address`
+
+Retrieves full address data from a given Brazilian postal code (CEP).
+
+**Method:** GET  
+**Query parameter:** `cep` — CEP with or without hyphen  
+
+Example:
+
+    http://127.0.0.1:5000/address?cep=01001-000
+
+**Success (200 OK):**
+
     {
-      "document": "12345678900",
-      "valid": true
+      "cep": "01001-000",
+      "logradouro": "Praça da Sé",
+      "complemento": "lado ímpar",
+      "bairro": "Sé",
+      "localidade": "São Paulo",
+      "uf": "SP",
+      "estado": "São Paulo",
+      "regiao": "Sudeste",
+      "ddd": "11",
+      "siafi": "7107"
     }
-    ```
--   **Error Response (422 Unprocessable Entity):**
-    ```json
-    {
-      "document": "12345678901",
-      "valid": false,
-      "message": "Invalid CPF"
-    }
-    ```
 
-### CNPJ Validation
+**Error responses:**
 
--   **Endpoint:** `POST /validate/cnpj`
--   **Description:** Validates a Brazilian CNPJ number. The CNPJ can be sent with or without punctuation.
--   **Request Body:**
-    ```json
-    {
-      "cnpj": "11.222.333/0001-81"
-    }
-    ```
--   **Success Response (200 OK):**
-    ```json
-    {
-      "document": "11222333000181",
-      "valid": true
-    }
-    ```
--   **Error Response (422 Unprocessable Entity):**
-    ```json
-    {
-      "document": "11222333000182",
-      "valid": false,
-      "message": "Invalid CNPJ"
-    }
-    ```
+| Code | Message |
+|------|----------|
+| 400 | CEP must have 8 digits |
+| 404 | CEP not found |
+| 502 | Failed to reach API ViaCEP |
 
-### Example usage with cURL
+> 💡 Tip: Browsers may show escaped Unicode (like `\u00e9`).  
+> Use Postman, Insomnia, or a terminal command to see formatted accents:
+>
+>     curl -s "http://127.0.0.1:5000/address?cep=01001-000" | python -m json.tool
 
-You can test the endpoints using a tool like `cURL`.
+---
 
-**CPF:**
-```bash
-curl -X POST "http://127.0.0.1:8000/validate/cpf" \
-     -H "Content-Type: application/json" \
-     -d '{"cpf": "12345678900"}'
-```
+## 🧰 Tech Stack
 
-**CNPJ:**
-```bash
-curl -X POST "http://127.0.0.1:8000/validate/cnpj" \
-     -H "Content-Type: application/json" \
-     -d '{"cnpj": "11222333000181"}'
+- **Language:** Python 3.11+
+- **Framework:** Flask  
+- **HTTP Client:** Requests  
+- **External API:** ViaCEP  
+
+---
+
+## 🛠️ Roadmap
+
+- [ ] Add `/validate/cpf` endpoint  
+- [ ] Add `/validate/cnpj` endpoint  
+- [ ] Add SQLite cache support  
+- [ ] Deploy on Render/Railway  
+
+---
+
+## 👨‍💻 Author
+
+**João Pedro Novello**  
+🔗 [github.com/novello-dev](https://github.com/novello-dev)
+
+---
+
+## 🪪 License
+
+This project is licensed under the **MIT License** — see the LICENSE file for details.

@@ -23,7 +23,7 @@ def address():
 
     # Validate CEP length
     if len(cep_digits) != 8:
-        return jsonify({"error": "CEP deve ter 8 dígitos"}), 400
+        return jsonify({"error": "CEP must have 8 digits"}), 400
 
     # Request data from ViaCEP API
     try:
@@ -35,7 +35,7 @@ def address():
 
     # Handle invalid CEPs
     if data.get("erro"):
-        return jsonify({"error": "CEP não encontrado"}), 404
+        return jsonify({"error": "CEP not found"}), 404
 
     # Create a formatted JSON response
     response = make_response(jsonify(data), 200)
