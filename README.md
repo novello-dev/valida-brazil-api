@@ -1,11 +1,11 @@
-# Valida Brasil
+# Valida Brazil API
 [![Status](https://img.shields.io/badge/status-active-brightgreen)](#)
 [![Python](https://img.shields.io/badge/Python-3.11+-blue.svg)](https://www.python.org/)
 [![Flask](https://img.shields.io/badge/Flask-2.3+-orange.svg)](https://flask.palletsprojects.com/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
 
 A simple and lightweight API built with **Flask** that validates and retrieves Brazilian address data using the **ViaCEP API**.  
-It provides clean, UTF-8 encoded JSON responses, ideal for small projects, tests, or API integration learning.
+It provides clean, UTF-8 encoded JSON responses, ideal for small projects, tests, or API-integration learning.
 
 ---
 
@@ -22,8 +22,8 @@ It provides clean, UTF-8 encoded JSON responses, ideal for small projects, tests
 
 To set up and run the project locally:
 
-    git clone https://github.com/novello-dev/valida-brasil.git
-    cd valida-brasil
+    git clone https://github.com/novello-dev/valida-brazil-api.git
+    cd valida-brazil-api
     python -m venv .venv
 
     # Windows (PowerShell)
@@ -40,15 +40,16 @@ To set up and run the project locally:
 
 To start the Flask development server:
 
-    # Windows
-    python app\main.py
-
-    # macOS/Linux
-    python app/main.py
+    python -m app.main
 
 Once running, the API will be available at:
 
     http://127.0.0.1:5000
+
+Quick test:
+
+    curl -s http://127.0.0.1:5000/health
+    curl -s "http://127.0.0.1:5000/address?cep=01001-000" | python -m json.tool
 
 ---
 
@@ -87,8 +88,6 @@ Example:
       "bairro": "Sé",
       "localidade": "São Paulo",
       "uf": "SP",
-      "estado": "São Paulo",
-      "regiao": "Sudeste",
       "ddd": "11",
       "siafi": "7107"
     }
@@ -97,12 +96,12 @@ Example:
 
 | Code | Message |
 |------|----------|
-| 400 | CEP must have 8 digits |
+| 400 | CEP must contain exactly 8 digits |
 | 404 | CEP not found |
-| 502 | Failed to reach API ViaCEP |
+| 502 | Failed to reach ViaCEP API |
 
 > 💡 Tip: Browsers may show escaped Unicode (like `\u00e9`).  
-> Use Postman, Insomnia, or a terminal command to see formatted accents:
+> Use Postman, Insomnia, or a terminal command to view formatted accents:
 >
 >     curl -s "http://127.0.0.1:5000/address?cep=01001-000" | python -m json.tool
 
