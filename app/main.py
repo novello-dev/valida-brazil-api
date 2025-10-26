@@ -1,47 +1,20 @@
-# Importing dependencies
-from flask import Flask, request, jsonify, make_response
-import re
-import requests
+# Import dependencies
+from flask import Flask
+from app.routes.address_routes import address_bp
+from app.routes.health_routes import health_bp
 
-app = Flask(__name__)
+def create_app():
+    # Initialize app
+    app = Flask(__name__)
+    app.config['JSON_AS_ASCII'] = False  # keep UTF-8 in JSON
 
-# Configure JSON to display accents properly
-app.config["JSON_AS_ASCII"] = False
+    # Register routes
+    app.register_blueprint(health_bp)
+    app.register_blueprint(address_bp)
 
+    return app
 
-@app.get("/health")
-def health():
-    """Healthcheck endpoint"""
-    return jsonify({"status": "ok"}), 200
-
-
-@app.get("/address")
-def address():
-    """Fetch address data from ViaCEP based on a given CEP"""
-    cep = request.args.get("cep", "")
-    cep_digits = re.sub(r"\D", "", cep)  # Remove any non-numeric characters
-
-    # Validate CEP length
-    if len(cep_digits) != 8:
-        return jsonify({"error": "CEP must have 8 digits"}), 400
-
-    # Request data from ViaCEP API
-    try:
-        r = requests.get(f"https://viacep.com.br/ws/{cep_digits}/json/", timeout=5)
-    except requests.RequestException:
-        return jsonify({"error": "Failed to reach ViaCEP API"}), 502
-
-    data = r.json()
-
-    # Handle invalid CEPs
-    if data.get("erro"):
-        return jsonify({"error": "CEP not found"}), 404
-
-    # Create a formatted JSON response
-    response = make_response(jsonify(data), 200)
-    response.headers["Content-Type"] = "application/json; charset=utf-8"
-    return response
-
-
-if __name__ == "__main__":
-    app.run(debug=True, use_reloader=False)
+if __name__ == '__main__':
+    # Run in debug mode for local dev
+    app = create_app()
+    app.run(debug=True)
