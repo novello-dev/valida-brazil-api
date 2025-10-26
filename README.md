@@ -48,8 +48,8 @@ Once running, the API will be available at:
 
 Quick test:
 
-    curl -s http://127.0.0.1:5000/health
-    curl -s "http://127.0.0.1:5000/address?cep=01001-000" | python -m json.tool
+    curl http://127.0.0.1:5000/health
+    curl "http://127.0.0.1:5000/address?cep=01001-000"
 
 ---
 
@@ -101,15 +101,15 @@ Example:
 | 502 | Failed to reach ViaCEP API |
 
 > 💡 Tip: Browsers may show escaped Unicode (like `\u00e9`).  
-> Use Postman, Insomnia, or a terminal command to view formatted accents:
+> Use Postman, Insomnia, or any terminal command to view formatted accents:
 >
->     curl -s "http://127.0.0.1:5000/address?cep=01001-000" | python -m json.tool
+>     curl "http://127.0.0.1:5000/address?cep=01001-000"
 
 ---
 
 ## 🧰 Tech Stack
 
-- **Language:** Python 3.11+
+- **Language:** Python 3.11+  
 - **Framework:** Flask  
 - **HTTP Client:** Requests  
 - **External API:** ViaCEP  
@@ -122,6 +122,12 @@ Example:
 - [ ] Add `/validate/cnpj` endpoint  
 - [ ] Add SQLite cache support  
 - [ ] Deploy on Render/Railway  
+
+---
+
+## 🙏 Acknowledgments
+
+This README was drafted with help from **GitRead**.
 
 ---
 
